@@ -1,0 +1,37 @@
+{
+  "driver_id": "directv_driver",
+  "version": "0.1.0",
+  "min_core_api": "0.20.0",
+  "name": { "en": "DirecTV" },
+  "icon": "uc:display",
+  "description": {
+    "en": "Control your DirecTV receivers and Genie clients with Remote Two/3."
+  },
+  "developer": {
+    "name": "Austin Drummond",
+    "email": "adrummond7@gmail.com",
+    "url": "https://github.com/austindrummond"
+  },
+  "home_page": "https://github.com/austindrummond/uc-intg-directv",
+  "setup_data_schema": {
+    "title": {
+      "en": "Integration setup"
+    },
+    "settings": [
+      {
+        "id": "info",
+        "label": {
+          "en": "Setup process"
+        },
+        "field": {
+          "label": {
+            "value": {
+              "en": "This integration controls DirecTV receivers over the SHEF protocol. On each receiver, enable Menu > Settings > Whole-Home > External Device > External Access = Allow, and give the receiver a static IP address."
+            }
+          }
+        }
+      }
+    ]
+  },
+  "release_date": "2026-07-12"
+}
