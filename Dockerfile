@@ -15,6 +15,6 @@ ENV UC_INTEGRATION_INTERFACE="0.0.0.0"
 ENV UC_INTEGRATION_HTTP_PORT="9090"
 
 ENV UC_CONFIG_HOME="/config"
-LABEL org.opencontainers.image.source https://github.com/austindrummond/uc-intg-directv
+LABEL org.opencontainers.image.source https://github.com/adrum/uc-intg-directv
 
 CMD ["python3", "-u", "intg-directv/driver.py"]

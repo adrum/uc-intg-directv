@@ -10,9 +10,9 @@
   "developer": {
     "name": "Austin Drummond",
     "email": "adrummond7@gmail.com",
-    "url": "https://github.com/austindrummond"
+    "url": "https://github.com/adrum"
   },
-  "home_page": "https://github.com/austindrummond/uc-intg-directv",
+  "home_page": "https://github.com/adrum/uc-intg-directv",
   "setup_data_schema": {
     "title": {
       "en": "Integration setup"

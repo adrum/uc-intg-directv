@@ -2,6 +2,7 @@
 name = "uc-intg-directv"
 version = "0.1.0"
 description = "An Unfolded Circle integration for DirecTV receivers"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pyee>=9.0.0",
