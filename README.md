@@ -28,6 +28,22 @@ report an authorization error.
 
 Connect the receiver by **either** Ethernet or coax/DECA — never both at once.
 
+## Installation
+
+1. Download the integration package (`.tar.gz`) from the [Releases page][releases].
+2. Upload it via the Remote's web configurator: **Integrations → Install custom**.
+3. Configure your receiver through the setup wizard.
+
+## Updating
+
+1. Download the new integration package (`.tar.gz`) from the [Releases page][releases].
+2. Remove the existing integration from the Remote (twice). Your configured activity
+   settings are preserved.
+3. Upload the new archive via the web configurator: **Integrations → Install custom**.
+4. Configure your receiver through the setup wizard.
+
+[releases]: https://github.com/adrum/uc-intg-directv/releases
+
 ## Setup
 
 1. Add the integration and enter the receiver's IP address.
@@ -81,16 +97,28 @@ receiver is slow, so short intervals are not recommended.
 Genie 2 (HS17) is **untested** — it is headless, and no source confirms whether it
 responds to SHEF on its own address. Target its clients instead.
 
-## Running
+## Running outside the Remote
 
-Install as a driver on the remote from a release archive, or run it yourself:
+The driver can also run on any machine on the same network instead of being uploaded to
+the Remote, which discovers it over mDNS. This is the easier way to develop against a
+real receiver, since you get logs and a fast reload loop:
 
 ```bash
 pip install -r requirements.txt
-python intg-directv/driver.py
+UC_LOG_LEVEL=DEBUG python intg-directv/driver.py
 ```
 
 Docker images are published to `ghcr.io/adrum/uc-intg-directv`.
+
+## Releasing
+
+Pushing a `v*` tag builds the aarch64 driver binary, packages it, and publishes a
+GitHub release with the `.tar.gz` attached:
+
+```bash
+git tag v0.1.0
+git push origin main --tags
+```
 
 ## Credits
 
