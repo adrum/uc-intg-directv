@@ -284,12 +284,24 @@ class SHEFClient:
             self._owns_session = True
         return self._session
 
-    async def _request(self, path: str, params: dict[str, Any] | None = None) -> Any:
+    async def _request(
+        self,
+        path: str,
+        params: dict[str, Any] | None = None,
+        *,
+        retry_on_500: bool = True,
+    ) -> Any:
         """
         Perform a single serialised, rate-limited GET against the receiver.
 
         Holding the lock across the sleep as well as the request is what guarantees
         the receiver only ever sees one request at a time.
+
+        A 500 is retried by default, because back-to-back commands make the
+        single-threaded receiver answer 500 while it is still busy. Set
+        ``retry_on_500=False`` for calls where a 500 is a stable condition rather
+        than a busy signal (see get_tuned): retrying it only burns the backoff
+        while holding the lock, which starves user commands waiting behind it.
         """
         url = URL.build(scheme="http", host=self.host, port=self.port, path=path)
         query = {k: str(v) for k, v in (params or {}).items() if v is not None}
@@ -307,8 +319,9 @@ class SHEFClient:
                     return await self._send(url, query)
                 except SHEFResponseError as err:
                     # A 500 means the receiver was still busy with the previous
-                    # command. Retrying after a pause almost always succeeds.
-                    if err.status != 500 or attempt == MAX_RETRIES:
+                    # command. Retrying after a pause almost always succeeds --
+                    # unless the caller says this 500 is a stable state.
+                    if err.status != 500 or attempt == MAX_RETRIES or not retry_on_500:
                         raise
                     last_error = err
                     _LOG.debug(
@@ -403,9 +416,18 @@ class SHEFClient:
         return int(data.get("mode", MODE_STANDBY))
 
     async def get_tuned(self, client_addr: str = HOST_CLIENT_ADDR) -> Program:
-        """Return what is currently playing. Only valid while the client is active."""
+        """
+        Return what is currently playing. Only valid while the client is active.
+
+        A receiver that is on but not showing live TV (a menu, the guide, the
+        home screen) answers this with a 500. That is a stable state, not a busy
+        signal, so it is not retried: the caller treats the error as "on, no
+        program" and retrying would just hold the request lock through the backoff.
+        """
         return Program.from_dict(
-            await self._request("/tv/getTuned", {"clientAddr": client_addr})
+            await self._request(
+                "/tv/getTuned", {"clientAddr": client_addr}, retry_on_500=False
+            )
         )
 
     async def get_prog_info(
